@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лендинг с таблицей</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+    <h1 class="headname">Введите данные</h1>
+    <div class="table-box">
+        <div class="table-container">
+            <table class="table-items">
+                <tr>
+                    <th>наличие курения (0 - некурящие; 1 - курящие)</th>
+                    <td><input type="number" id="input1" min="0" max="1" /></td>
+                </tr>
+                <tr>
+                    <th>ВЗОМТ в анамнезе (0 - отсутствие; 1- наличие)</th>
+                    <td><input type="number" id="input2" min="0" max="1" /></td>
+                </tr>
+                <tr>
+                    <th>длительность менструаций (дни)</th>
+                    <td><input type="number" id="input3" /></td>
+                </tr>
+                <tr>
+                    <th>окружность талии (см)</th>
+                    <td><input type="number" id="input4" /></td>
+                </tr>
+                <tr>
+                    <th>степень защиты гигиенических средств (в абс. числах)</th>
+                    <td><input type="number" id="input5" /></td>
+                </tr>
+                <tr>
+                    <th>носительство генотипа ТС по eNOS (0 - отсутствие; 1- наличие)</th>
+                    <td><input type="number" id="input6" min="0" max="1" /></td>
+                </tr>
+                <tr>
+                    <th>носительство генотипа СА по VEGF-A (0 - отсутствие; 1- наличие)</th>
+                    <td><input type="number" id="input7" min="0" max="1" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="block-butt">
+    <button onclick="handleCalculate()">Посчитать</button>
+    <div class="result" id="result"></div>
+</div>
+<script>
+    function calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA) {
+        // Задаем константы
+        const z = -16.8 + 1.9 * XKUR + 1.55 * XVZOMT + 1.1 * XDM + 0.04 * XOT + 0.6 * XSZGS + 0.73 * XTS + 1.73 * XSA;
+        // Вычисляем P
+        const P = 1 / (1 + Math.exp(-z));
+        return P;
+    }
+
+    function handleCalculate() {
+        const XKUR = parseFloat(document.getElementById('input1').value) || 0;
+        const XVZOMT = parseFloat(document.getElementById('input2').value) || 0;
+        const XDM = parseFloat(document.getElementById('input3').value) || 0;
+        const XOT = parseFloat(document.getElementById('input4').value) || 0;
+        const XSZGS = parseFloat(document.getElementById('input5').value) || 0;
+        const XTS = parseFloat(document.getElementById('input6').value) || 0;
+        const XSA = parseFloat(document.getElementById('input7').value) || 0;
+
+        const result = calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA);
+
+        // Выводим результат
+        document.getElementById('result').innerText = 'Результат: ' + result.toFixed(4);
+
+                    // Проверяем риск
+                    if (result >= 0.39) {
+                document.getElementById('result').innerText += ' (Есть риск рецидива АМК.)';
+                document.getElementById('result').classList.add('alert');
+            } else {
+                document.getElementById('result').innerText += ' (Риска рецидива АМК нет.)';
+                document.getElementById('result').classList.remove('alert');
+            }
+    }
+</script>
+</body>
+</html>
