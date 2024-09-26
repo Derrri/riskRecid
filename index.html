@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лендинг с таблицей</title>
+    <title>Прогнозирование риска рецидивов</title>
     <link rel="stylesheet" href="css/styles.css">
 
 </head>
+
 <body>
     <h1 class="headname">Введите данные</h1>
+    <h2 class="name-table">Клинико-анамнестические и молекулярно-генетические факторы</h2>
     <div class="table-box">
         <div class="table-container">
             <table class="table-items">
@@ -44,41 +47,201 @@
         </div>
     </div>
     <div class="block-butt">
-    <button onclick="handleCalculate()">Посчитать</button>
-    <div class="result" id="result"></div>
-</div>
-<script>
-    function calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA) {
-        // Задаем константы
-        const z = -16.8 + 1.9 * XKUR + 1.55 * XVZOMT + 1.1 * XDM + 0.04 * XOT + 0.6 * XSZGS + 0.73 * XTS + 1.73 * XSA;
-        // Вычисляем P
-        const P = 1 / (1 + Math.exp(-z));
-        return P;
-    }
+        <button class="button" onclick="handleCalculate()">Посчитать</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        function calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA) {
+            // Задаем константы
+            const z = -16.8 + 1.9 * XKUR + 1.55 * XVZOMT + 1.1 * XDM + 0.04 * XOT + 0.6 * XSZGS + 0.73 * XTS + 1.73 * XSA;
+            // Вычисляем P
+            const P = 1 / (1 + Math.exp(-z));
+            return P;
+        }
 
-    function handleCalculate() {
-        const XKUR = parseFloat(document.getElementById('input1').value) || 0;
-        const XVZOMT = parseFloat(document.getElementById('input2').value) || 0;
-        const XDM = parseFloat(document.getElementById('input3').value) || 0;
-        const XOT = parseFloat(document.getElementById('input4').value) || 0;
-        const XSZGS = parseFloat(document.getElementById('input5').value) || 0;
-        const XTS = parseFloat(document.getElementById('input6').value) || 0;
-        const XSA = parseFloat(document.getElementById('input7').value) || 0;
+        function handleCalculate() {
+            const XKUR = parseFloat(document.getElementById('input1').value) || 0;
+            if (XKUR > 1) {
+                alert("Пожалуйста, введите значение -НАЛИЧИЕ КУРЕНИЯ- меньше или равное 1.");
+                return;
+            }
+            const XVZOMT = parseFloat(document.getElementById('input2').value) || 0;
+            if (XVZOMT > 1) {
+                alert("Пожалуйста, введите значение -ВЗОМТ- меньше или равное 1.");
+                return;
+            }
+            const XDM = parseFloat(document.getElementById('input3').value) || 0;
+            const XOT = parseFloat(document.getElementById('input4').value) || 0;
+            const XSZGS = parseFloat(document.getElementById('input5').value) || 0;
+            const XTS = parseFloat(document.getElementById('input6').value) || 0;
+            if (XTS > 1) {
+                alert("Пожалуйста, введите значение -ТС- меньше или равное 1.");
+                return;
+            }
+            const XSA = parseFloat(document.getElementById('input7').value) || 0;
+            if (XSA > 1) {
+                alert("Пожалуйста, введите значение -СА- меньше или равное 1.");
+                return;
+            }
 
-        const result = calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA);
+            const result = calculateRecurrenceProbability(XKUR, XVZOMT, XDM, XOT, XSZGS, XTS, XSA);
 
-        // Выводим результат
-        document.getElementById('result').innerText = 'Результат: ' + result.toFixed(4);
+            // Выводим результат
+            document.getElementById('result').innerText = 'Результат: ' + result.toFixed(4);
 
-                    // Проверяем риск
-                    if (result >= 0.39) {
+            // Проверяем риск
+            if (result >= 0.39) {
                 document.getElementById('result').innerText += ' (Есть риск рецидива АМК.)';
                 document.getElementById('result').classList.add('alert');
+                document.getElementById('result').classList.remove('safe');
             } else {
                 document.getElementById('result').innerText += ' (Риска рецидива АМК нет.)';
+                document.getElementById('result').classList.add('safe');
                 document.getElementById('result').classList.remove('alert');
             }
-    }
-</script>
+        }
+    </script>
+    <!------------------------------------------------------------------------->
+    <h2 class="name-table">Клинико-анамнестические факторы</h2>
+    <div class="table-box">
+        <div class="table-container">
+            <table class="table-items">
+                <tr>
+                    <th>наличие курения (0 - некурящие; 1 - курящие)</th>
+                    <td><input type="number" id="input11" min="0" max="1" /></td>
+                </tr>
+                <tr>
+                    <th>ВЗОМТ в анамнезе (0 - отсутствие; 1- наличие)</th>
+                    <td><input type="number" id="input21" min="0" max="1" /></td>
+                </tr>
+                <tr>
+                    <th>длительность менструаций (дни)</th>
+                    <td><input type="number" id="input31" /></td>
+                </tr>
+                <tr>
+                    <th>окружность талии (см)</th>
+                    <td><input type="number" id="input41" /></td>
+                </tr>
+                <tr>
+                    <th>степень защиты гигиенических средств (в абс. числах)</th>
+                    <td><input type="number" id="input51" /></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div class="block-butt">
+        <button class="button" onclick="handleCalculate1()">Посчитать</button>
+        <div class="result1" id="result1"></div>
+    </div>
+    <script>
+        function calculateRecurrenceProbability1(XKUR1, XVZOMT1, XDM1, XOT1, XSZGS1) {
+            // Задаем константы
+            let z = -13.6 + (1.61 * XKUR1) + (1.75 * XVZOMT1) + (0.82 * XDM1) + (0.04 * XOT1) + (0.65 * XSZGS1);
+
+
+            let P = 1 / (1 + Math.exp(-z));
+
+            return P;
+        }
+
+        function handleCalculate1() {
+            const XKUR1 = parseFloat(document.getElementById('input11').value) || 0;
+            if (XKUR1 > 1) {
+                alert("Пожалуйста, введите значение -НАЛИЧИЕ КУРЕНИЯ- меньше или равное 1.");
+                return;
+            }
+            const XVZOMT1 = parseFloat(document.getElementById('input21').value) || 0;
+            if (XVZOMT1 > 1) {
+                alert("Пожалуйста, введите значение -ВЗОМТ- меньше или равное 1.");
+                return;
+            }
+            const XDM1 = parseFloat(document.getElementById('input31').value) || 0;
+            const XOT1 = parseFloat(document.getElementById('input41').value) || 0;
+            const XSZGS1 = parseFloat(document.getElementById('input51').value) || 0;
+
+
+            const result1 = calculateRecurrenceProbability1(XKUR1, XVZOMT1, XDM1, XOT1, XSZGS1);
+
+            // Выводим результат
+            document.getElementById('result1').innerText = 'Результат: ' + result1.toFixed(4);
+
+            // Проверяем риск
+            if (result1 >= 0.43) {
+                document.getElementById('result1').innerText += ' (Есть риск рецидива АМК.)';
+                document.getElementById('result1').classList.add('alert');
+                document.getElementById('result1').classList.remove('safe');
+            } else {
+                document.getElementById('result1').innerText += ' (Риска рецидива АМК нет.)';
+                document.getElementById('result1').classList.add('safe');
+                document.getElementById('result1').classList.remove('alert');
+            }
+        }
+    </script>
+    <!--------------------------------------------------------------------->
+    <h2 class="name-table">Иммуногистохимические показатели</h2>
+    <div class="table-box">
+        <div class="table-container">
+            <table class="table-items">
+                <tr>
+                    <th>площадь экспрессии CD34+ в строме эндометрии (в целых числах, %)</th>
+                    <td><input type="number" id="inputCD34" min="0" max="100" /></td>
+                </tr>
+                <tr>
+                    <th>площадь экспрессии eNOS в строме эндометрия (в целых числах, %)</th>
+                    <td><input type="number" id="inputeNOS" min="0" max="100" /></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div class="block-butt">
+        <button class="button" onclick="handleCalculate3()">Посчитать</button>
+        <div class="result" id="result3"></div>
+    </div>
+    <script>
+        function calculateImmunohistochemicalProbability(XCD34, XeNOS) {
+            // Расчет z
+            let z = -14.744 + (3.1 * XCD34) + (0.74 * XeNOS);
+
+            // Расчет P
+            let P = 1 / (1 + Math.exp(-z));
+
+            return P;
+        }
+
+        function handleCalculate3() {
+            const XCD34 = parseFloat(document.getElementById('inputCD34').value) || 0;
+            const XeNOS = parseFloat(document.getElementById('inputeNOS').value) || 0;
+
+            // Проверка на допустимые значения
+            if (XCD34 < 0 || XCD34 > 100) {
+                alert("Пожалуйста, введите значение CD34+ в диапазоне от 0 до 100.");
+                return;
+            }
+            if (XeNOS < 0 || XeNOS > 100) {
+                alert("Пожалуйста, введите значение eNOS в диапазоне от 0 до 100.");
+                return;
+            }
+
+            const result3 = calculateImmunohistochemicalProbability(XCD34, XeNOS);
+
+            // Выводим результат
+            document.getElementById('result3').innerText = 'Результат: ' + result3.toFixed(4);
+
+
+            if (result3 >= 0.45) {
+                document.getElementById('result3').innerText += ' (Есть риск рецидива АМК.)';
+                document.getElementById('result3').classList.add('alert');
+                document.getElementById('result3').classList.remove('safe');
+            } else {
+                document.getElementById('result3').innerText += ' (Риска рецидива АМК нет.)';
+                document.getElementById('result3').classList.remove('alert');
+                document.getElementById('result3').classList.add('safe');
+            }
+        }
+    </script>
+
 </body>
+
 </html>
